@@ -3,7 +3,12 @@ $(package)_version=0.1
 $(package)_download_path=https://github.com/scipr-lab/$(package)/archive/
 $(package)_file_name=$(package)-$($(package)_git_commit).tar.gz
 $(package)_download_file=$($(package)_git_commit).tar.gz
-$(package)_sha256_hash=b5ec84a836d0d305407d5f39c8176bae2bb448abe802a8d11ba0f88f17e6d358
+$(package)_sha256_hash=21b02d48a5448fe8bd0ba3a890f38604930500617d20d339500fab6e340bc2cf
+#$(package)_sha256_hash=b5ec84a836d0d305407d5f39c8176bae2bb448abe802a8d11ba0f88f17e6d358
+# if there reports sha256sum: WARNING: 1 computed checksum did NOT match
+# solution:
+# open zcash/depends/work/download/libsnark-0.1/.libsnark-69f312f149cc4bd8def8e2fed26a7941ff41251d.tar.gz.hash
+# repalce sha256_hash with above
 $(package)_git_commit=69f312f149cc4bd8def8e2fed26a7941ff41251d
 
 $(package)_dependencies=crypto++ libgmp xbyak ate-pairing

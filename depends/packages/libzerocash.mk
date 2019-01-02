@@ -4,7 +4,7 @@ $(package)_file_name=$(package)-$($(package)_git_commit).tar.gz
 $(package)_download_file=$($(package)_git_commit).tar.gz
 $(package)_sha256_hash=1364a739751bcdda86cfd66d3d019844d116c374d7a7634bfb3e1a47c085f3c0
 $(package)_git_commit=dd5db5815be70f0e4895784cc905df6f1c73cb17
-
+# depends on libzerocash
 $(package)_dependencies=libsnark crypto++ openssl boost libgmp
 $(package)_patches=
 

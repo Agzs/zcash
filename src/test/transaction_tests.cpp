@@ -31,6 +31,7 @@
 #include "libzerocash/PourOutput.h"
 #include "libzerocash/Address.h"
 #include "libzerocash/Coin.h"
+#include "libzerocash/tests/timer.h"
 
 using namespace std;
 using namespace json_spirit;
@@ -311,19 +312,26 @@ BOOST_AUTO_TEST_CASE(test_basic_pour_verification)
     // Also, it's generally libzerocash's job to ensure
     // the integrity of the scheme through its own tests.
 
-    static const unsigned int TEST_TREE_DEPTH = 3;
+    static const unsigned int TEST_TREE_DEPTH = 20;
 
+    timer_start("************Initailizing");
     // construct the r1cs keypair
     auto keypair = ZerocashParams::GenerateNewKeyPair(TEST_TREE_DEPTH);
     ZerocashParams p(
         TEST_TREE_DEPTH,
         &keypair
     );
+    timer_stop("************Initailized");
 
     // construct a merkle tree
     IncrementalMerkleTree merkleTree(TEST_TREE_DEPTH);
+    timer_start("************Creating Address");
     Address addr = Address::CreateNewRandomAddress();
+    timer_stop("************Created Address");
+    
+    timer_start("************Creating Coin");
     Coin coin(addr.getPublicAddress(), 100);
+    timer_stop("************Created Coin");
 
     // commitment from coin
     std::vector<bool> commitment(ZC_CM_SIZE * 8);
@@ -345,6 +353,7 @@ BOOST_AUTO_TEST_CASE(test_basic_pour_verification)
     merkleTree.getWitness(index, path);
 
     // create CPourTx
+    timer_start("************Creating PourTx");
     CScript scriptPubKey;
     boost::array<PourInput, NUM_POUR_INPUTS> inputs = {
         PourInput(coin, addr, convertVectorToInt(index), path),
@@ -357,7 +366,13 @@ BOOST_AUTO_TEST_CASE(test_basic_pour_verification)
 
     {
         CPourTx pourtx(p, scriptPubKey, uint256(rt), inputs, outputs, 0, 0);
-        BOOST_CHECK(pourtx.Verify(p));
+        timer_stop("************Created PourTx");
+        //BOOST_CHECK(pourtx.Verify(p));
+
+        timer_start("************Verifying PourTx");
+        bool resVerify = pourtx.Verify(p);
+        BOOST_CHECK(resVerify);
+        timer_stop("************Verifyed PourTx");
 
         CDataStream ss(SER_DISK, CLIENT_VERSION);
         ss << pourtx;

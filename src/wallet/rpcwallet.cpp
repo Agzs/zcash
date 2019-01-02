@@ -18,6 +18,8 @@
 #include "walletdb.h"
 #include "primitives/transaction.h"
 
+#include "tests/timer.h"
+
 #include <stdint.h>
 
 #include <boost/assign/list_of.hpp>
@@ -2370,6 +2372,8 @@ Value zc_raw_receive(const json_spirit::Array& params, bool fHelp)
 
     LOCK(cs_main);
 
+    libzerocash::timer_start("************ Receive Coin");
+
     std::vector<unsigned char> a_sk;
     std::string sk_enc;
 
@@ -2414,6 +2418,9 @@ Value zc_raw_receive(const json_spirit::Array& params, bool fHelp)
     result.push_back(Pair("amount", ValueFromAmount(value_of_bucket)));
     result.push_back(Pair("bucket", HexStr(ss.begin(), ss.end())));
     result.push_back(Pair("exists", found_in_chain));
+
+    libzerocash::timer_stop("************ Receive Coin");
+
     return result;
 }
 
